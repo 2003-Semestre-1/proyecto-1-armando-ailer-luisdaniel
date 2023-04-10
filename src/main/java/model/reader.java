@@ -222,7 +222,11 @@ public class reader {
                         break;
                 }
             } else {
-                tokenList.add(0, op.toString());
+                if (Arrays.asList("DEC", "INC").contains(op.toString())) {
+                    tokenList.add(0, op.toString());
+                } else{
+                    return new ArrayList<>();
+                }
             }
             return tokenList;
         } catch (Exception ex) {

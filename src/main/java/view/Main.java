@@ -15,11 +15,15 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -126,6 +130,8 @@ public class Main extends javax.swing.JFrame {
         pilaTextField = new javax.swing.JTextField();
         bGuardarConf = new javax.swing.JButton();
         bRestablecer = new javax.swing.JButton();
+        temas = new java.awt.Choice();
+        labTemas = new javax.swing.JLabel();
         lowerPanel = new javax.swing.JPanel();
         pCPU1 = new javax.swing.JPanel();
         spCPU1 = new javax.swing.JScrollPane();
@@ -212,30 +218,43 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        temas.add("Metal");
+        temas.add("Nimbus");
+        temas.add("CDE/Motif");
+        temas.add("Windows");
+        temas.add("Windows Classic");
+        temas.add("GTK");
+        temas.add("Mac");
+        temas.setName(""); // NOI18N
+
+        labTemas.setText("Tema");
+
         javax.swing.GroupLayout configDialogLayout = new javax.swing.GroupLayout(configDialog.getContentPane());
         configDialog.getContentPane().setLayout(configDialogLayout);
         configDialogLayout.setHorizontalGroup(
             configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(configDialogLayout.createSequentialGroup()
                 .addGap(71, 71, 71)
-                .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(configDialogLayout.createSequentialGroup()
                         .addComponent(bRestablecer)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(bGuardarConf)
-                        .addGap(152, 152, 152))
+                        .addGap(150, 150, 150))
                     .addGroup(configDialogLayout.createSequentialGroup()
                         .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(labMemoria)
                             .addComponent(labMemoriaVirtual)
                             .addComponent(labAlmacenamiento)
-                            .addComponent(labPila))
+                            .addComponent(labPila)
+                            .addComponent(labTemas))
                         .addGap(18, 18, 18)
                         .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(virtualTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(memoriaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(almacenamientoTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pilaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(pilaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(temas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(112, 112, 112))))
         );
 
@@ -261,11 +280,15 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(pilaTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labPila))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(temas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labTemas))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(configDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bGuardarConf)
                     .addComponent(bRestablecer))
-                .addGap(52, 52, 52))
+                .addContainerGap())
         );
 
         configDialogLayout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {almacenamientoTextField, memoriaTextField, pilaTextField, virtualTextField});
@@ -593,7 +616,7 @@ public class Main extends javax.swing.JFrame {
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.CENTER);
 
-        menuFile.setText("File");
+        menuFile.setText("Archivos");
 
         menuFileOpen.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         menuFileOpen.setText("Cargar Archivo");
@@ -606,7 +629,7 @@ public class Main extends javax.swing.JFrame {
 
         menuBar.add(menuFile);
 
-        menuEdit.setText("Edit");
+        menuEdit.setText("Otros");
 
         menuEditConf.setText("Configuración");
         menuEditConf.addActionListener(new java.awt.event.ActionListener() {
@@ -1050,12 +1073,12 @@ public class Main extends javax.swing.JFrame {
         }
         while (true){
             try {
-                System.out.print("Memoria: " + memoria[siguienteInstruccion]); // debug
+                System.out.print("Instrucción: " + memoria[siguienteInstruccion]); // debug
                 if (bandera_interrupcion){
                     break;
                 }
                 ejecutarPorIndice(siguienteInstruccion);
-                System.out.println(registros_valores); // debug 
+                System.out.println(" | Registros: " + registros_valores); // debug
             } catch(RuntimeException e){
                 terminal.addToOuput(e.getMessage());
                 break;
@@ -1181,6 +1204,8 @@ public class Main extends javax.swing.JFrame {
                 registros_valores = new HashMap<String, Integer>() {{ // Limpeamos memoria
                     put("AC", 0); put("AX", 0); put("BX", 0); put("CX", 0); put("DX", 0);
                 }};
+                
+                setLookAndFeel(temas.getSelectedItem());
             } else {
                 throw new RuntimeException("Error: los valores para la configuración deben enteros mayores a 1.");
             }
@@ -1188,6 +1213,20 @@ public class Main extends javax.swing.JFrame {
             this.terminal.addToOuput("Error de valores en configuración.");
         }
     }//GEN-LAST:event_bGuardarConfActionPerformed
+    
+    public void setLookAndFeel(String lafClassName) {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if (lafClassName.equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                }
+            }
+            SwingUtilities.updateComponentTreeUI(this);
+            this.pack();
+        } catch (Exception e) {
+            terminal.addToOuput("No se pudo establecer el tema seleccionado.");
+        }
+    }
 
     private void bRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRestablecerActionPerformed
         this.n_virtual = valores_defecto[0];
@@ -1202,6 +1241,7 @@ public class Main extends javax.swing.JFrame {
         registros_valores = new HashMap<String, Integer>() {{ // Limpeamos memoria
             put("AC", 0); put("AX", 0); put("BX", 0); put("CX", 0); put("DX", 0);
         }};
+        setLookAndFeel("WindowsLookAndFeel");
     }//GEN-LAST:event_bRestablecerActionPerformed
 
     private void bSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bSiguienteActionPerformed
@@ -1225,9 +1265,9 @@ public class Main extends javax.swing.JFrame {
         }
         
         try {
-            System.out.print("Memoria: " + memoria[siguienteInstruccion] + " | bandera_interrupcion " + bandera_interrupcion); // debug 
+            System.out.print("Instrucción " + memoria[siguienteInstruccion] + " | Bandera_interrupcion " + bandera_interrupcion); // debug 
             ejecutarPorIndice(siguienteInstruccion);
-            System.out.println(registros_valores); // borrar 
+            System.out.println(" | Registros: " + registros_valores); // debug
         } catch(RuntimeException e){
             terminal.addToOuput(e.getMessage());
         }
@@ -1267,13 +1307,7 @@ public class Main extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            /*for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("WindowsLookAndFeel".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }*/
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel");
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -1317,6 +1351,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel labMemoria;
     private javax.swing.JLabel labMemoriaVirtual;
     private javax.swing.JLabel labPila;
+    private javax.swing.JLabel labTemas;
     private javax.swing.JPanel lowerPanel;
     private javax.swing.JTable memoriaTable;
     private javax.swing.JTextField memoriaTextField;
@@ -1338,6 +1373,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane spDisco;
     private javax.swing.JScrollPane spMemoria;
     private javax.swing.JScrollPane spProcesosEstads;
+    private java.awt.Choice temas;
     private javax.swing.JPanel upperLeftPanel;
     private javax.swing.JPanel upperPanel;
     private javax.swing.JPanel upperRightPanel;

@@ -7,6 +7,8 @@ package view;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -887,6 +890,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void limpearMemoria() {
+        memoria = new ArrayList[n_memoria];
         for (int i = 0; i < n_memoria; i++) {
             memoria[i] = new ArrayList<>(); 
         } 
@@ -1128,12 +1132,20 @@ public class Main extends javax.swing.JFrame {
     private void bPasoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bPasoActionPerformed
        bSiguienteActionPerformed(null);
     }//GEN-LAST:event_bPasoActionPerformed
-
+   
+    public static void centerDialog(JDialog aDialog){
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int pointX = (int)((dimension.getWidth() - aDialog.getWidth()) / 2);
+        int pointY = (int)((dimension.getHeight() - aDialog.getHeight()) / 2);
+        aDialog.setLocation(pointX, pointY);
+    }
+    
     private void menuEditConfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditConfActionPerformed
         this.setEnabled(false);
+        
         this.configDialog.setVisible(true);
         this.configDialog.setEnabled(true);
-        
+        centerDialog(configDialog);
         this.memoriaTextField.setText(String.valueOf(this.n_memoria));
         this.virtualTextField.setText(String.valueOf(this.n_virtual));
         this.pilaTextField.setText(String.valueOf(this.n_pila));
@@ -1148,19 +1160,30 @@ public class Main extends javax.swing.JFrame {
     
     private void bGuardarConfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bGuardarConfActionPerformed
         try {
-            this.n_virtual = Integer.parseInt(this.virtualTextField.getText());
-            this.n_almacenamiento = Integer.parseInt(this.almacenamientoTextField.getText());
-            this.n_memoria = Integer.parseInt(this.memoriaTextField.getText());
-            this.n_pila = Integer.parseInt(this.pilaTextField.getText());
-            this.configDialog.dispose();
-            this.terminal.addToOuput("Configuración guardada con exito.");
-            focusMainGUI();
-            limpearMemoria();
-            limpearPila();
             
-            registros_valores = new HashMap<String, Integer>() {{ // Limpeamos memoria
-                put("AC", 0); put("AX", 0); put("BX", 0); put("CX", 0); put("DX", 0);
-            }};
+            int n_v = Integer.parseInt(this.virtualTextField.getText());
+            int n_a = Integer.parseInt(this.almacenamientoTextField.getText());
+            int n_m = Integer.parseInt(this.memoriaTextField.getText());
+            int n_p = Integer.parseInt(this.pilaTextField.getText());
+            
+            if (n_v >= 1 && n_a >= 1 && n_m >= 1 && n_v >= 1 && n_p >= 1){
+                this.n_virtual = n_v;
+                this.n_almacenamiento = n_a;
+                this.n_memoria = n_m;
+                this.n_pila = n_p;
+
+                this.configDialog.dispose();
+                this.terminal.addToOuput("Configuración guardada con exito.");
+                focusMainGUI();
+                limpearMemoria();
+                limpearPila();
+
+                registros_valores = new HashMap<String, Integer>() {{ // Limpeamos memoria
+                    put("AC", 0); put("AX", 0); put("BX", 0); put("CX", 0); put("DX", 0);
+                }};
+            } else {
+                throw new RuntimeException("Error: los valores para la configuración deben enteros mayores a 1.");
+            }
         } catch (Exception e) {
             this.terminal.addToOuput("Error de valores en configuración.");
         }
@@ -1168,9 +1191,9 @@ public class Main extends javax.swing.JFrame {
 
     private void bRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRestablecerActionPerformed
         this.n_virtual = valores_defecto[0];
-        this.n_almacenamiento =  valores_defecto[1];
+        this.n_almacenamiento = valores_defecto[1];
         this.n_memoria =  valores_defecto[2];
-        this.n_pila =   valores_defecto[3];
+        this.n_pila =  valores_defecto[3];
         this.configDialog.dispose();
         this.terminal.addToOuput("Configuración restablecida con exito.");
         focusMainGUI();

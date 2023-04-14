@@ -1100,29 +1100,33 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_bEjecutarActionPerformed
 
     private void menuFileOpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuFileOpenActionPerformed
-        JFileChooser chooser = new JFileChooser();
-        chooser.setCurrentDirectory(new File(System.getProperty("user.home") + "/Desktop"));
-        chooser.setAcceptAllFileFilterUsed(false); // Deshabilitar el filtro predeterminado
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos ASM", "asm");
-        chooser.setFileFilter(filter);
-        int result = chooser.showOpenDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            String path = chooser.getSelectedFile().getPath();
-            terminal.addToOuput("Archivo  seleccionado: " + path);
+        if (bandera_paso){
+            JOptionPane.showMessageDialog(null, "No se pueden cargar archivos durante la ejecución de código.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else { 
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new File(System.getProperty("user.home") + "/Desktop"));
+            chooser.setAcceptAllFileFilterUsed(false); // Deshabilitar el filtro predeterminado
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos ASM", "asm");
+            chooser.setFileFilter(filter);
+            int result = chooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                String path = chooser.getSelectedFile().getPath();
+                terminal.addToOuput("Archivo  seleccionado: " + path);
 
-            try {
-                List<String>[] temp_memoria = memoria.clone(); // Clonamos memoria a una memoria temporal
-                temp_memoria = leerArchivo(path, temp_memoria, false); // Se lee arhivo y se asigna a la memoria temporal
-                if (memoria != temp_memoria && tieneDatos(temp_memoria)) { // Se verifica que las memorias sean diferentes y no esten vacias
-                    memoria = temp_memoria.clone();
-                    terminal.addToOuput("Archivo cargado exitosamente");
-                    archivo_cargado1 = true;
+                try {
+                    List<String>[] temp_memoria = memoria.clone(); // Clonamos memoria a una memoria temporal
+                    temp_memoria = leerArchivo(path, temp_memoria, false); // Se lee arhivo y se asigna a la memoria temporal
+                    if (memoria != temp_memoria && tieneDatos(temp_memoria)) { // Se verifica que las memorias sean diferentes y no esten vacias
+                        memoria = temp_memoria.clone();
+                        terminal.addToOuput("Archivo cargado exitosamente");
+                        archivo_cargado1 = true;
+                    }
+
+                    setButton(true, bEjecutar);
+                    setButton(true, bPaso);
+                } catch (RuntimeException e) {
+                    terminal.addToOuput(e.getMessage());
                 }
-                
-                setButton(true, bEjecutar);
-                setButton(true, bPaso);
-            } catch (RuntimeException e) {
-                terminal.addToOuput(e.getMessage());
             }
         }
     }//GEN-LAST:event_menuFileOpenActionPerformed
@@ -1164,15 +1168,19 @@ public class Main extends javax.swing.JFrame {
     }
     
     private void menuEditConfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuEditConfActionPerformed
-        this.setEnabled(false);
-        
-        this.configDialog.setVisible(true);
-        this.configDialog.setEnabled(true);
-        centerDialog(configDialog);
-        this.memoriaTextField.setText(String.valueOf(this.n_memoria));
-        this.virtualTextField.setText(String.valueOf(this.n_virtual));
-        this.pilaTextField.setText(String.valueOf(this.n_pila));
-        this.almacenamientoTextField.setText(String.valueOf(this.n_almacenamiento));
+        if (bandera_paso){
+            JOptionPane.showMessageDialog(null, "No se pueden cambiar la configuración durante la ejecución de código.", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            this.setEnabled(false);
+
+            this.configDialog.setVisible(true);
+            this.configDialog.setEnabled(true);
+            centerDialog(configDialog);
+            this.memoriaTextField.setText(String.valueOf(this.n_memoria));
+            this.virtualTextField.setText(String.valueOf(this.n_virtual));
+            this.pilaTextField.setText(String.valueOf(this.n_pila));
+            this.almacenamientoTextField.setText(String.valueOf(this.n_almacenamiento));
+        }
     }//GEN-LAST:event_menuEditConfActionPerformed
     
     private void focusMainGUI() {
@@ -1229,12 +1237,12 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void bRestablecerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRestablecerActionPerformed
-        this.n_virtual = valores_defecto[0];
-        this.n_almacenamiento = valores_defecto[1];
-        this.n_memoria =  valores_defecto[2];
-        this.n_pila =  valores_defecto[3];
-        this.configDialog.dispose();
-        this.terminal.addToOuput("Configuración restablecida con exito.");
+        n_virtual = valores_defecto[0];
+        n_almacenamiento = valores_defecto[1];
+        n_memoria =  valores_defecto[2];
+        n_pila =  valores_defecto[3];
+        configDialog.dispose();
+        terminal.addToOuput("Configuración restablecida con exito.");
         focusMainGUI();
         limpearMemoria();
         limpearPila();
@@ -1261,6 +1269,9 @@ public class Main extends javax.swing.JFrame {
             bLimpear.setEnabled(false);
             bPaso.setEnabled(false);
             bSiguiente.setEnabled(true);
+            
+            menuEdit.setEnabled(false);
+            menuFile.setEnabled(false);
             terminal.addToOuput("Ejecución paso a paso inicida.");
         }
         

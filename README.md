@@ -6,4 +6,4 @@
 ### 2019015926 Ailer Josue Alvarado Aguero 
 ### Estado del proyecto: 3
 ### Plataforma utilizada Netbeans
-### Enlace del video: VIDEO PENDIENTE
+### Enlace del video: https://youtu.be/zXgRZ3N3t_4
